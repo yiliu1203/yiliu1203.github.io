@@ -9,12 +9,14 @@
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary">
 
-<meta property="og:title" content="ylBlog"/>
-<meta name="twitter:title" content="ylBlog">
-<meta property="og:url" content="" />
+<meta property="og:title" content="All Categories · ylBlog"/>
+<meta name="twitter:title" content="All Categories · ylBlog">
+<meta property="og:url" content="/categories" />
+<meta property="og:description" content="All categories of the ylBlog blog" />
+<meta name="twitter:description" content="All categories of the ylBlog blog">
 <meta property="og:site_name" content="ylBlog" />
 <meta property="og:article:author" content="yl" />
-        <title>ylBlog
+        <title>All Categories · ylBlog
 </title>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
@@ -23,6 +25,7 @@
         <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
         <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
 
 
     </head>
@@ -39,12 +42,12 @@
                         <a class="brand" href="/"><span class=site-name>ylBlog</span></a>
                         <div class="nav-collapse collapse">
                             <ul class="nav pull-right top-menu">
-                                <li  class="active">
+                                <li >
                                     <a href=
                                        "/"
                                     >Home</a>
                                 </li>
-                                <li ><a href="/categories">Categories</a></li>
+                                <li  class="active"><a href="/categories">Categories</a></li>
                                 <li ><a href="/tags">Tags</a></li>
                                 <li ><a href="/archives">Archives</a></li>
                                 <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
@@ -57,57 +60,53 @@
                 <div class="row-fluid">
                     <div class="span1"></div>
                     <div class="span10">
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="/categories">All Categories</a></h1>
+    </header>
+</div>
 
 
 <div class="row-fluid">
-
-    <div class="row-fluid">
-
-    </div>
-
-    <div class="row-fluid">
-        <div class="span8 offset2">
-            <header>
-            <h1 id="recent-posts">Recent Posts <a id="allposts" href="/archives">all posts</a></h1>
-            </header>
-        <div class="recent-posts">
-            <article itemscope>
-                <a href="/demo.html">
-                    Home222
-                </a>
-                <section>
-                    posted in
-                <a href="/categories#python-ref">Python</a>
-                <div class="recent-posts-time">
-                <time itemprop="dateCreated" datetime="2010-12-03T10:20:00+01:00">周五 03 十二月 2010</time>
+    <div class="span8 offset2">
+        <div class="accordion" id="accordion2">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle list-of-categories" data-toggle="collapse" data-parent="#accordion2" href="#python-ref">
+                        Python<span>3</span>
+                    </a>
                 </div>
-                </section>
-            </article>
-            <article itemscope>
-                <a href="/my-super-post.html">
-                    Home
-                </a>
-                <section>
-                    posted in
-                <a href="/categories#python-ref">Python</a>
-                <div class="recent-posts-time">
-                <time itemprop="dateCreated" datetime="2010-12-03T10:20:00+01:00">周五 03 十二月 2010</time>
+                <div id="python-ref" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <ul class="list-articles-category">
+                            <li itemscope>
+                                <time itemprop="dateCreated" datetime="2010-12-03T10:20:00+01:00">
+                                    周五 03 十二月 2010
+                                </time>
+                                    <a href="/demo.html">
+                                        Home222
+                                    </a>
+                            </li>
+                            <li itemscope>
+                                <time itemprop="dateCreated" datetime="2010-12-03T10:20:00+01:00">
+                                    周五 03 十二月 2010
+                                </time>
+                                    <a href="/my-super-post.html">
+                                        Home
+                                    </a>
+                            </li>
+                            <li itemscope>
+                                <time itemprop="dateCreated" datetime="2010-12-03T10:20:00+01:00">
+                                    周五 03 十二月 2010
+                                </time>
+                                    <a href="/my-super-post2.html">
+                                        Home
+                                    </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                </section>
-            </article>
-            <article itemscope>
-                <a href="/my-super-post2.html">
-                    Home
-                </a>
-                <section>
-                    posted in
-                <a href="/categories#python-ref">Python</a>
-                <div class="recent-posts-time">
-                <time itemprop="dateCreated" datetime="2010-12-03T10:20:00+01:00">周五 03 十二月 2010</time>
-                </div>
-                </section>
-            </article>
-        </div>
+            </div>
         </div>
     </div>
 </div>
@@ -133,6 +132,18 @@
                 return (query.length > 0);
             }
         </script>
+
+<script  language="javascript" type="text/javascript">
+    function uncollapse() {
+            $(window.location.hash).collapse({
+                toggle: true
+            })
+    }
+</script>
+
+<script type="text/javascript" language="JavaScript">
+    uncollapse();
+</script>
     </body>
     <!-- Theme: Elegant built for Pelican
         License : MIT -->
