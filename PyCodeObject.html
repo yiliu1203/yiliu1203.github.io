@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ch">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="yldemo" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Python, PyCodeObject, Python, " />
+
+<meta property="og:title" content="PyCodeObject笔记 "/>
+<meta property="og:url" content="/PyCodeObject.html" />
+<meta property="og:description" content="PyCodeObject笔记" />
+<meta property="og:site_name" content="ylBlog" />
+<meta property="og:article:author" content="yldemo" />
+<meta property="og:article:published_time" content="2019-08-21T00:00:00+02:00" />
+<meta property="og:article:modified_time" content="2019-08-21T00:00:00+02:00" />
+<meta name="twitter:title" content="PyCodeObject笔记 ">
+<meta name="twitter:description" content="PyCodeObject笔记">
+
+        <title>PyCodeObject笔记  · ylBlog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="/"><span class=site-name>ylBlog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       "/"
+                                    >Home</a>
+                                </li>
+                                <li ><a href="/categories">Categories</a></li>
+                                <li ><a href="/tags">Tags</a></li>
+                                <li ><a href="/archives">Archives</a></li>
+                                <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+        <h1>
+            <a href="/PyCodeObject.html">
+                PyCodeObject笔记
+            </a>
+        </h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+            
+            <h2>PyCodeObject 阅读笔记</h2>
+<h3>PyCodeObject 是什么</h3>
+<p>它是 python文件编译后得到的，.pyc 文件是PyCodeObject的二进制文件形式。
+pyc中存储了很多python程序静态信息包括定义的字符串、常量等。PyCodeObject是python中的一个命名空间(命名空间指的是有独立变量定义的Code block如函数、类、模块等)的编译结果在内存中的表示，在磁盘上则是以.pyc 文件的形式存在。</p>
+<h3>如何得到PyCodeObject</h3>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Test</span>  <span class="c1"># 会生成test.pyc</span>
+</pre></div>
+
+
+<p>或者</p>
+<div class="highlight"><pre><span></span><span class="n">complime</span><span class="p">(</span><span class="s2">&quot;test.py&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>如何解析PyCodeObject</h3>
+<p>cpython 中 PyCodeObject 的定义如下</p>
+<div class="highlight"><pre><span></span><span class="cm">/* Bytecode object */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">PyObject_HEAD</span>
+    <span class="kt">int</span> <span class="n">co_argcount</span><span class="p">;</span>        <span class="cm">/* #arguments, except *args */</span>
+    <span class="kt">int</span> <span class="n">co_nlocals</span><span class="p">;</span>     <span class="cm">/* #local variables */</span>
+    <span class="kt">int</span> <span class="n">co_stacksize</span><span class="p">;</span>       <span class="cm">/* #entries needed for evaluation stack */</span>
+    <span class="kt">int</span> <span class="n">co_flags</span><span class="p">;</span>       <span class="cm">/* CO_..., see below */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_code</span><span class="p">;</span>      <span class="cm">/* instruction opcodes */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_consts</span><span class="p">;</span>    <span class="cm">/* list (constants used) */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_names</span><span class="p">;</span>     <span class="cm">/* list of strings (names used) */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_varnames</span><span class="p">;</span>  <span class="cm">/* tuple of strings (local variable names) */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_freevars</span><span class="p">;</span>  <span class="cm">/* tuple of strings (free variable names) */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_cellvars</span><span class="p">;</span>      <span class="cm">/* tuple of strings (cell variable names) */</span>
+    <span class="cm">/* The rest doesn&#39;t count for hash/cmp */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_filename</span><span class="p">;</span>  <span class="cm">/* string (where it was loaded from) */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_name</span><span class="p">;</span>      <span class="cm">/* string (name, for reference) */</span>
+    <span class="kt">int</span> <span class="n">co_firstlineno</span><span class="p">;</span>     <span class="cm">/* first source line number */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_lnotab</span><span class="p">;</span>    <span class="cm">/* string (encoding addr&lt;-&gt;lineno mapping) See</span>
+<span class="cm">                   Objects/lnotab_notes.txt for details. */</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">co_zombieframe</span><span class="p">;</span>     <span class="cm">/* for optimization only (see frameobject.c) */</span>
+    <span class="n">PyObject</span> <span class="o">*</span><span class="n">co_weakreflist</span><span class="p">;</span>   <span class="cm">/* to support weakrefs to code objects */</span>
+<span class="p">}</span> <span class="n">PyCodeObject</span><span class="p">;</span>
+</pre></div>
+
+
+<p>其中 co_code 变量是真正的字节码指令，我们常用 dis 模块来解析这个指令</p>
+<h3>一个例子看来看 dis的结果 和 co_code 是如何对应的</h3>
+<p>test.py 如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="k">def</span> <span class="nf">f1</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s2">&quot;f1&quot;</span>
+<span class="k">def</span> <span class="nf">f2</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;f2&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>parse_pyc.py 如下：</p>
+<div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">解析.pyc 文件</span>
+<span class="sd">用法：python parse_pyc.py xxx.pyc</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">TYPE_NULL</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+<span class="n">TYPE_NONE</span> <span class="o">=</span> <span class="s1">&#39;N&#39;</span>
+<span class="n">TYPE_FALSE</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
+<span class="n">TYPE_TRUE</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+<span class="n">TYPE_STOPITER</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
+<span class="n">TYPE_ELLIPSIS</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+<span class="n">TYPE_INT</span> <span class="o">=</span> <span class="s1">&#39;i&#39;</span>
+<span class="n">TYPE_INT64</span> <span class="o">=</span> <span class="s1">&#39;I&#39;</span>
+<span class="n">TYPE_FLOAT</span> <span class="o">=</span> <span class="s1">&#39;f&#39;</span>
+<span class="n">TYPE_BINARY_FLOAT</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span>
+<span class="n">TYPE_COMPLEX</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
+<span class="n">TYPE_BINARY_COMPLEX</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span>
+<span class="n">TYPE_LONG</span> <span class="o">=</span> <span class="s1">&#39;l&#39;</span>
+<span class="n">TYPE_STRING</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+<span class="n">TYPE_INTERNED</span> <span class="o">=</span> <span class="s1">&#39;t&#39;</span>
+<span class="n">TYPE_STRINGREF</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+<span class="n">TYPE_TUPLE</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span>
+<span class="n">TYPE_LIST</span> <span class="o">=</span> <span class="s1">&#39;[&#39;</span>
+<span class="n">TYPE_DICT</span> <span class="o">=</span> <span class="s1">&#39;{&#39;</span>
+<span class="n">TYPE_CODE</span> <span class="o">=</span> <span class="s1">&#39;c&#39;</span>
+<span class="n">TYPE_UNICODE</span> <span class="o">=</span> <span class="s1">&#39;u&#39;</span>
+<span class="n">TYPE_UNKNOWN</span> <span class="o">=</span> <span class="s1">&#39;?&#39;</span>
+<span class="n">TYPE_SET</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span>
+<span class="n">TYPE_FROZENSET</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span>
+
+<span class="n">strlist</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">class</span> <span class="nc">NULL</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="n">null</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">Code</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;argcount&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nlocals&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;stacksize&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;flags&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;consts&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;names&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;varnames&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;freevars&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cellvars&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;filename&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;firstlineno&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;lnotab&#39;</span>
+        <span class="p">]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;code(</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span>
+                <span class="c1"># v = &#39;0x&#39; + v.encode(&#39;hex&#39;)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;hex&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">str</span><span class="p">(</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="mi">2</span><span class="p">)]</span>  <span class="c1"># code 转成十进制</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">{} = {}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;)&#39;</span>
+
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">consts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Code</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">{} at 0x{:x}:{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+<span class="k">def</span> <span class="nf">r_byte</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">ord</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">r_short</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;h&#39;</span><span class="p">,</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;I&#39;</span><span class="p">,</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">r_long</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">r_int64</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="n">lo</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="n">hi</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hi</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span> <span class="o">|</span> <span class="n">lo</span>
+
+
+<span class="k">def</span> <span class="nf">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+
+    <span class="n">type_</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_NONE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_NULL</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">null</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_STOPITER</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Stopiteration&#39;</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_ELLIPSIS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Ellipsis&#39;</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_FALSE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_TRUE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_INT</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_INT64</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">r_int64</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_LONG</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">n</span>
+        <span class="n">digits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">digits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_short</span><span class="p">(</span><span class="n">fp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;long({}, {})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_FLOAT</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_byte</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">buff</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;float({}, {!r})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">buff</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_INTERNED</span> <span class="ow">or</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_STRING</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_INTERNED</span><span class="p">:</span>
+            <span class="n">strlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_STRINGREF</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">strlist</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_UNICODE</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_TUPLE</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_LIST</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">l</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_DICT</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">null</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">d</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_SET</span> <span class="ow">or</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_FROZENSET</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_CODE</span><span class="p">:</span>
+        <span class="n">argcount</span> <span class="o">=</span> <span class="n">r_long</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">nlocals</span> <span class="o">=</span> <span class="n">r_long</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">stacksize</span> <span class="o">=</span> <span class="n">r_long</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">r_long</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">consts</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">varnames</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">freevars</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">cellvars</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">firstlineno</span> <span class="o">=</span> <span class="n">r_long</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">lnotab</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Code</span><span class="p">(</span>
+            <span class="n">argcount</span><span class="o">=</span><span class="n">argcount</span><span class="p">,</span>
+            <span class="n">nlocals</span><span class="o">=</span><span class="n">nlocals</span><span class="p">,</span>
+            <span class="n">stacksize</span><span class="o">=</span><span class="n">stacksize</span><span class="p">,</span>
+            <span class="n">flags</span><span class="o">=</span><span class="n">flags</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">consts</span><span class="o">=</span><span class="n">consts</span><span class="p">,</span>
+            <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+            <span class="n">varnames</span><span class="o">=</span><span class="n">varnames</span><span class="p">,</span>
+            <span class="n">freevars</span><span class="o">=</span><span class="n">freevars</span><span class="p">,</span>
+            <span class="n">cellvars</span><span class="o">=</span><span class="n">cellvars</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">firstlineno</span><span class="o">=</span><span class="n">firstlineno</span><span class="p">,</span>
+            <span class="n">lnotab</span><span class="o">=</span><span class="n">lnotab</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">TYPE_LIST</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">l</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">test</span>  <span class="c1"># compile</span>
+    <span class="n">pyc_file</span> <span class="o">=</span> <span class="s2">&quot;test.pyc&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pyc_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="c1"># 读取 magic：long</span>
+    <span class="n">magic</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s1">&#39;magic:&#39;</span><span class="p">,</span> <span class="n">magic</span>
+
+    <span class="c1"># 读取 mtime</span>
+    <span class="n">mtime</span> <span class="o">=</span> <span class="n">r_int</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s1">&#39;mtime:&#39;</span><span class="p">,</span> <span class="n">mtime</span>
+
+    <span class="c1"># 读取PyCodeObject</span>
+    <span class="n">code_obj</span> <span class="o">=</span> <span class="n">r_object</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s1">&#39;code obj:&#39;</span><span class="p">,</span> <span class="n">code_obj</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+
+<p>得到的结果如下：</p>
+<div class="highlight"><pre><span></span><span class="n">magic</span><span class="p">:</span> <span class="mi">168686339</span>
+<span class="n">mtime</span><span class="p">:</span> <span class="mi">1566313179</span>
+<span class="n">code</span> <span class="n">obj</span><span class="p">:</span> <span class="n">code</span><span class="p">(</span>
+    <span class="n">argcount</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">nlocals</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">stacksize</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="mi">100</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">100</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">108</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">90</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">100</span> <span class="mi">2</span> <span class="mi">0</span> <span class="mi">132</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">90</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">100</span> <span class="mi">3</span> <span class="mi">0</span> <span class="mi">132</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">90</span> <span class="mi">2</span> <span class="mi">0</span> <span class="mi">100</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">83</span>
+    <span class="n">consts</span> <span class="o">=</span> <span class="p">(</span><span class="il">4294967295L</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Code</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x0284A890</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Code</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x0284A8F0</span><span class="o">&gt;</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;f2&#39;</span><span class="p">)</span>
+    <span class="n">varnames</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">freevars</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">cellvars</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Python27</span>\<span class="n">Testpy2</span>\<span class="n">test</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">firstlineno</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">lnotab</span> <span class="o">=</span> 
+<span class="p">)</span>
+<span class="n">f1</span> <span class="n">at</span> <span class="mh">0x284a890</span><span class="p">:</span><span class="n">code</span><span class="p">(</span>
+    <span class="n">argcount</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">nlocals</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">stacksize</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="mi">67</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="mi">100</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">71</span> <span class="mi">72</span> <span class="mi">100</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">83</span>
+    <span class="n">consts</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">varnames</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">freevars</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">cellvars</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Python27</span>\<span class="n">Testpy2</span>\<span class="n">test</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">f1</span>
+    <span class="n">firstlineno</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">lnotab</span> <span class="o">=</span> 
+</pre></div>
+
+
+<p><strong>其中 code 字段 已经转成了十进制， 为了方便对比</strong></p>
+<p>dis.dis(test.f1) 反汇编输出如下：</p>
+<div class="highlight"><pre><span></span><span class="mi">5</span>           <span class="mi">0</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="s1">&#39;f1&#39;</span><span class="p">)</span>
+              <span class="mi">3</span> <span class="n">PRINT_ITEM</span>          
+              <span class="mi">4</span> <span class="n">PRINT_NEWLINE</span>       
+              <span class="mi">5</span> <span class="n">LOAD_CONST</span>               <span class="mi">0</span> <span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+              <span class="mi">8</span> <span class="n">RETURN_VALUE</span>        
+</pre></div>
+
+
+<p>dis 的结果 和 f1.code 是反汇编和对应二进制的表达形式不同，cpython 执行当然是用code字段，我们来看就看dis的结果。下面来看看如何对应：</p>
+<p>先看看Include/Opcode.h中相关指令的定义</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STOP_CODE</td>
+<td>0</td>
+</tr>
+<tr>
+<td>LOAD_CONST</td>
+<td>100</td>
+</tr>
+<tr>
+<td>PRINT_ITEM</td>
+<td>71</td>
+</tr>
+<tr>
+<td>PRINT_NEWLINE</td>
+<td>72</td>
+</tr>
+<tr>
+<td>RETURN_VALUE</td>
+<td>83</td>
+</tr>
+</tbody>
+</table>
+<p>dis 结果中指令前面的数字表示 在code 中的索引， 后面的表示 如果有参数则在 consts 中的索引</p>
+<p>5 表示第五行</p>
+<p>因此dis 的结果解读如下：
+1. 取code 中的第 0 个 指令，它是 Load_Const ，这个指令的用途是 取 consts 中的某个变量入栈，后面的1 则指定的是 consts[1] 这个变量，也就是consts中的索引，
+code[0] 后面跟着的就是参数 1.  </p>
+<ol>
+<li>
+<p>经过上面一步，到 code[2] 了， 它是 0 </p>
+</li>
+<li>
+<p>到code[3], 它是 71， PRINT_ITEM. 这个指令的作用是 弹出栈顶的元素并打印,没参数</p>
+</li>
+<li>
+<p>到code[4], 它是 72， 打印换行</p>
+</li>
+<li>
+<p>到code[5], 83, REUTNR</p>
+</li>
+</ol>
+<p>可以看到 dis的结果 是和 code 完全对应起来的.</p>
+<h3>参考</h3>
+<p>https://github.com/ausaki/python-source-code-notes/blob/master/codes/python_scripts/parse_pyc.py
+https://codeday.me/bug/20171012/84377.html</p>
+
+
+            
+            
+            
+            <hr/>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <h4>Published</h4>
+            <time itemprop="dateCreated" datetime="2019-08-21T00:00:00+02:00">8月 21, 2019</time>
+
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#python-ref">Python</a>
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article">
+                <li><a href="/tags#pycodeobject-ref">PyCodeObject
+                    <span>1</span>
+</a></li>
+                <li><a href="/tags#python-ref">Python
+                    <span>1</span>
+</a></li>
+            </ul>
+<h4>Contact</h4>
+    <a href="#" title="My You can add links in your config file Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-you can add links in your config file sidebar-social-links"></i></a>
+    <a href="#" title="My Another social link Profile" class="sidebar-social-links" target="_blank">
+    <i class="fa fa-another social link sidebar-social-links"></i></a>
+            
+
+
+
+
+
+            
+
+
+
+
+
+        </div>
+        </section>
+</div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    
+    <script  language="javascript" type="text/javascript">
+function uncollapse() {
+    if (window.location.hash.match(/^#comment-\d+$/)) {
+        $('#disqus_thread').collapse('show');
+    }
+}
+</script>
+<script type="text/javascript" language="JavaScript">
+uncollapse();
+window.onhashchange=function(){
+    if (window.location.hash.match(/^#comment-\d+$/))
+        window.location.reload(true);
+}
+</script>
+<script>
+$('#disqus_thread').on('shown', function () {
+    var link = document.getElementById('comment-accordion-toggle');
+    var old_innerHTML = link.innerHTML;
+    $(link).fadeOut(200, function() {
+        $(this).text('Click here to hide comments').fadeIn(200);
+    });
+    $('#disqus_thread').on('hidden', function () {
+        $(link).fadeOut(200, function() {
+            $(this).text(old_innerHTML).fadeIn(200);
+        });
+    })
+})
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
